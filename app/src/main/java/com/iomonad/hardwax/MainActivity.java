@@ -1,18 +1,34 @@
 package com.iomonad.hardwax;
 
+/*
+ * Copyright (c) 2017 iomonad <iomonad@riseup.net>.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
-
 import com.iomonad.hardwax.client.RequestHandler;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -128,7 +144,14 @@ public class MainActivity extends AppCompatActivity {
             /* Close wait after async exec */
             if (pDialog.isShowing())
                 pDialog.dismiss();
-            // Todo: Parse object through list
+
+            /* @Desc: Update Json result in the adaptater
+            * */
+            ListAdapter adapter = new SimpleAdapter(
+                    MainActivity.this, feedList,
+                    R.layout.list_item, new String[]{"title","description","link"},
+                    new int[] {R.id.title, R.id.description, R.id.link});
+            lv.setAdapter(adapter); /* Pipe adapter to list */
         }
     }
 
