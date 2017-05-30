@@ -27,12 +27,12 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
-import fr.arnaudguyon.xmltojsonlib.XmlToJson;
-import com.iomonad.hardwax.client.RequestHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import fr.arnaudguyon.xmltojsonlib.XmlToJson;
+import com.iomonad.hardwax.client.RequestHandler;
+import com.iomonad.hardwax.utils.HtmlParser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -100,9 +100,13 @@ public class MainActivity extends AppCompatActivity {
                                 JSONObject cursor = feedArray.getJSONObject(i);
                                 /* Temporary hash map to store values */
                                 HashMap<String, String> feed = new HashMap<>();
-                                /* Extract values */
+
+
+                                // TODO: 5/30/17 Trim descriptions and extract correct values.
+                                
+
                                 feed.put("title", cursor.get("title").toString());
-                                feed.put("description", cursor.get("description").toString());
+                                feed.put("description", "Such description");
                                 feed.put("link", cursor.get("guid").toString());
                                 /* Push it to our MainActivity list array*/
                                 feedList.add(feed);
@@ -145,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             if (pDialog.isShowing())
                 pDialog.dismiss();
 
-            /* @Desc: Update Json result in the adaptater
+            /* @Desc: Update Json result in the adapter
             * */
             ListAdapter adapter = new SimpleAdapter(
                     MainActivity.this, feedList,
