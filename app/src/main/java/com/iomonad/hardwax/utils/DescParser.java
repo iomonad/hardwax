@@ -18,38 +18,22 @@ package com.iomonad.hardwax.utils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-public class HtmlParser {
+public class DescParser extends AsyncTask<Document, Void, String> {
 
-    private static final String TAG = "XmlToJson";
-    private Document root_document;
+    @Override
+    protected void onPreExecute(){};
 
-    public class Builder {
-
-        /* Document is stored */
-        private Document document;
-
-        public Builder(@NonNull String s) {
-            root_document = Jsoup.parse(s);
-        }
-
-        /* Small helper to parse document */
-        public void parse(String s) {
-            this.document = Jsoup.parse(s);
-            return;
-        }
-
-        public String getDescription() {
-            return this.document.select("em").first().toString();
-        }
-
-        public HtmlParser build() {
-            return new HtmlParser(this);
-        }
+    @Override
+    protected String doInBackground(Document... d) {
+        return "Some threaded description";
     }
 
-    public HtmlParser(Builder b) {
-        b.build();
+    private String getDesccription(Document d) {
+        Elements links = d.getElementsByTag("dom");
+        return d.toString();
     }
 }

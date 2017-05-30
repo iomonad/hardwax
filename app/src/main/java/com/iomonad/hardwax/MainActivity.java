@@ -25,14 +25,19 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 import com.iomonad.hardwax.client.RequestHandler;
-import com.iomonad.hardwax.utils.HtmlParser;
+import com.iomonad.hardwax.utils.DescParser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -98,15 +103,17 @@ public class MainActivity extends AppCompatActivity {
                             feed_nums = feedArray.length();
                             for(int i = 0; i < feed_nums; i++) {
                                 JSONObject cursor = feedArray.getJSONObject(i);
+
                                 /* Temporary hash map to store values */
                                 HashMap<String, String> feed = new HashMap<>();
 
+                                /* Current document modelized in soup */
+                                Document p = Jsoup.parse(cursor.get("description").toString());
+                                Elements dsoup = p.getElementsByTag("em");
 
-                                // TODO: 5/30/17 Trim descriptions and extract correct values.
-                                
-
+                                /* Fill the map*/
                                 feed.put("title", cursor.get("title").toString());
-                                feed.put("description", "Such description");
+                                feed.put("description", dsoup.text());
                                 feed.put("link", cursor.get("guid").toString());
                                 /* Push it to our MainActivity list array*/
                                 feedList.add(feed);
@@ -132,10 +139,17 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(),
-                                "Couldn't get json from server.",
-                                Toast.LENGTH_LONG)
-                                .show();
+                        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                        alertDialog.setTitle("Internet Error");
+                        alertDialog.setMessage("Couldn't get data from server, please check your internet connection.");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        finish(); /* Close app because you need internet */
+                                    }
+                                });
+                        alertDialog.show();
                     }
                 });
 
@@ -162,7 +176,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        finish(); /* Flush to avoid battery drain */
     }
 
     @Override
