@@ -9,12 +9,13 @@ import android.widget.ListView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
+import fr.arnaudguyon.xmltojsonlib.XmlToJson;
+
 import com.iomonad.hardwax.client.RequestHandler;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONException;
-
+import org.json.JSONObject;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -24,14 +25,28 @@ public class MainActivity extends AppCompatActivity {
 
     /* Private components instances */
     private ProgressDialog pDialog;
-    private ListView lv;
-
-    private String feed_path = "http://hardwax.com/feeds/news/";
+    public ListView lv;
 
     ArrayList<HashMap<String,String>> feedList;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        feedList = new ArrayList<>();
+        lv = (ListView) findViewById(R.id.list);
+
+         new GetFeed().execute();
+    }
+
+
     /* Async thread to get hardwax feed */
     private class GetFeed extends AsyncTask<Void, Void, Void> {
+
+
+        private String feed_path = "http://hardwax.com/feeds/news/";
+        int feed_nums = 0;
 
         @Override
         protected void onPreExecute() {
@@ -47,14 +62,50 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... arg0) {
             RequestHandler rh = new RequestHandler();
-            String jsonRes = rh.execRequest(feed_path);
+            String stringRes = rh.execRequest(feed_path); /* Raw xml unserialized */
 
-            if(jsonRes != null) {
-                Log.e(TAG,"Got response from server: " + jsonRes);
+            if(stringRes != null) {
                 try {
-                    // Todo: Extract json value from converted xml
+                    XmlToJson xjs = new XmlToJson.Builder(stringRes)
+                            .forceList("rss").build();
+                    JSONObject jsonObj = xjs.toJson(); /* Convert stream to json object */
+                    Log.i(TAG,"Got object: " + xjs.toString());
+
+                    JSONObject rssObject = jsonObj.getJSONObject("rss");
+                    if(rssObject != null) {
+                        JSONObject chanObject = rssObject.getJSONObject("channel");
+                        if(chanObject != null) {
+                            /*  Our feed array */
+                            JSONArray feedArray = chanObject.getJSONArray("item");
+                            Log.i(TAG, "Got feed array: " + feedArray);
+                            /* Processing feed */
+                            feed_nums = feedArray.length();
+                            for(int i = 0; i < feed_nums; i++) {
+                                JSONObject cursor = feedArray.getJSONObject(i);
+                                /* Temporary hash map to store values */
+                                HashMap<String, String> feed = new HashMap<>();
+                                /* Extract values */
+                                feed.put("title", cursor.get("title").toString());
+                                feed.put("description", cursor.get("description").toString());
+                                feed.put("link", cursor.get("guid").toString());
+                                /* Push it to our MainActivity list array*/
+                                feedList.add(feed);
+                            }
+                        }
+                    }
+
+                } catch (final JSONException e) {
+                    Log.e(TAG,"Json error: " + e.getMessage());
                 } finally {
-                    Log.e(TAG, "Json parsing error !");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                    String.format("Got %s items.", (int) feed_nums),
+                                    Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    });
                 }
             } else {
                 Log.e(TAG, "Couldn't get json from server.");
@@ -79,18 +130,6 @@ public class MainActivity extends AppCompatActivity {
                 pDialog.dismiss();
             // Todo: Parse object through list
         }
-    }
-
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        feedList = new ArrayList<>();
-        lv = (ListView) findViewById(R.id.list);
-
-        new GetFeed().execute();
     }
 
     @Override
