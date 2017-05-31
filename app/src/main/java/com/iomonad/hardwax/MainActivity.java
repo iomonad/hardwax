@@ -21,6 +21,8 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -37,7 +39,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 import com.iomonad.hardwax.client.RequestHandler;
-import com.iomonad.hardwax.utils.DescParser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         feedList = new ArrayList<>();
         lv = (ListView) findViewById(R.id.list);
 
-         new GetFeed().execute();
+        new GetFeed().execute();
     }
 
 
@@ -77,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
             pDialog.setMessage("Please wait...");
             pDialog.setCancelable(false);
             pDialog.show();
-
         }
 
         @Override
@@ -90,15 +90,12 @@ public class MainActivity extends AppCompatActivity {
                     XmlToJson xjs = new XmlToJson.Builder(stringRes)
                             .forceList("rss").build();
                     JSONObject jsonObj = xjs.toJson(); /* Convert stream to json object */
-                    Log.i(TAG,"Got object: " + xjs.toString());
-
-                    JSONObject rssObject = jsonObj.getJSONObject("rss");
+                    final JSONObject rssObject = jsonObj.getJSONObject("rss");
                     if(rssObject != null) {
                         JSONObject chanObject = rssObject.getJSONObject("channel");
                         if(chanObject != null) {
                             /*  Our feed array */
                             JSONArray feedArray = chanObject.getJSONArray("item");
-                            Log.i(TAG, "Got feed array: " + feedArray);
                             /* Processing feed */
                             feed_nums = feedArray.length();
                             for(int i = 0; i < feed_nums; i++) {
@@ -165,11 +162,18 @@ public class MainActivity extends AppCompatActivity {
 
             /* @Desc: Update Json result in the adapter
             * */
-            ListAdapter adapter = new SimpleAdapter(
+            final ListAdapter adapter = new SimpleAdapter(
                     MainActivity.this, feedList,
                     R.layout.list_item, new String[]{"title","description","link"},
                     new int[] {R.id.title, R.id.description, R.id.link});
             lv.setAdapter(adapter); /* Pipe adapter to list */
+            /* Set listener for events */
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                }
+            });
         }
     }
 
