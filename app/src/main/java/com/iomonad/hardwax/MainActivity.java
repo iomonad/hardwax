@@ -139,11 +139,19 @@ public class MainActivity extends AppCompatActivity {
                         AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
                         alertDialog.setTitle("Internet Error");
                         alertDialog.setMessage("Couldn't get data from server, please check your internet connection.");
-                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Exit",
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         dialog.dismiss();
                                         finish(); /* Close app because you need internet */
+                                    }
+                                });
+                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Retry",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        finish();
+                                        startActivity(getIntent()); /* Restart activity*/
                                     }
                                 });
                         alertDialog.show();
