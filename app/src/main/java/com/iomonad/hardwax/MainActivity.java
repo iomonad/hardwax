@@ -186,14 +186,28 @@ public class MainActivity extends AppCompatActivity {
                     new int[] {R.id.title, R.id.description, R.id.link});
             lv.setAdapter(adapter); /* Pipe adapter to list */
 
-            /* Set listener for events */
+            /* Simple click open web page
+            * */
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                public void onItemClick(AdapterView<?> parent, View view,
+                                        int position, long id) {
                     Intent browser = new Intent(Intent.ACTION_VIEW,
                             Uri.parse(feedList.get(position).get("link")));
                     startActivity(browser);
+                }
+            });
 
+            /* Long click open image.
+            * */
+            lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> arg0, View view,
+                                               int position, long id) {
+                    Intent browser = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(feedList.get(position).get("img")));
+                    startActivity(browser);
+                    return true;
                 }
             });
         }
