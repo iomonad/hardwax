@@ -1,1 +1,3 @@
-
+langage: android
+notifications:
+  email: false
