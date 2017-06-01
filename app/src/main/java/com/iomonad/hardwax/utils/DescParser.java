@@ -16,25 +16,19 @@ package com.iomonad.hardwax.utils;
  * limitations under the License.
  */
 
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Element;
-import android.os.AsyncTask;
-import android.support.annotation.NonNull;
-
 
 /* @Description: Trivial class to parse
 *   serialized html easily.
 * */
 
 public class DescParser {
-
     public String getDesccription(Document d) {
         Elements links = d.getElementsByTag("em");
         return links.text();
     }
-
     public String getImage(Document d) {
         Element img = d.select("img").last();
         return img.attr("src");

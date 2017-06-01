@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -39,22 +38,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 import com.iomonad.hardwax.client.RequestHandler;
 import com.iomonad.hardwax.utils.DescParser;
-import com.squareup.picasso.Picasso;
+import com.iomonad.hardwax.client.Hardwax;
 
 public class MainActivity extends AppCompatActivity {
 
     /* Classname for debugging */
-    private String TAG = MainActivity.class.getSimpleName();
+    private final String TAG = MainActivity.class.getSimpleName();
 
     /* Private components instances */
     private ProgressDialog pDialog;
-    public ListView lv;
+    private ListView lv;
 
-    ArrayList<HashMap<String,String>> feedList;
+    private ArrayList<HashMap<String,String>> feedList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,15 +62,12 @@ public class MainActivity extends AppCompatActivity {
         feedList = new ArrayList<>();
         lv = (ListView) findViewById(R.id.list);
 
-        new GetFeed().execute();
+        new GetFeed().execute(Hardwax.selection.get("merchandise"));
     }
 
-
     /* Async thread to get hardwax feed */
-    private class GetFeed extends AsyncTask<Void, Void, Void> {
+    private class GetFeed extends AsyncTask<String, Void, Void> {
 
-
-        private String feed_path = "http://hardwax.com/feeds/news/";
         int feed_nums = 0;
 
         @Override
@@ -86,9 +81,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected Void doInBackground(Void... arg0) {
+        protected Void doInBackground(String... feed_path) {
             RequestHandler rh = new RequestHandler();
-            String stringRes = rh.execRequest(feed_path); /* Raw xml unserialized */
+            String stringRes = rh.execRequest(feed_path[0]); /* Raw xml unserialized */
 
             if(stringRes != null) {
                 try {
@@ -109,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
                                 /* Temporary hash map to store values */
                                 HashMap<String, String> feed = new HashMap<>();
 
-                                /* Current document modelized in soup */
+                                /* Current document modeled in soup */
                                 Document d = Jsoup.parse(cursor.get("description").toString());
 
                                 /* Parser instance */
@@ -182,8 +177,8 @@ public class MainActivity extends AppCompatActivity {
             * */
             final ListAdapter adapter = new SimpleAdapter(
                     MainActivity.this, feedList,
-                    R.layout.list_item, new String[]{"title","description","link"},
-                    new int[] {R.id.title, R.id.description, R.id.link});
+                    R.layout.list_item, new String[]{"title", "description", "link"},
+                    new int[]{R.id.title, R.id.description, R.id.link});
             lv.setAdapter(adapter); /* Pipe adapter to list */
 
             /* Simple click open web page
@@ -213,6 +208,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Override
     protected void onStop() {
         super.onStop();

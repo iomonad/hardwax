@@ -16,10 +16,12 @@ package com.iomonad.hardwax.utils;
  * limitations under the License.
  */
 
-public interface Scraper {
-
-     void parse(String s); /* Parse string to Jsoup Document */
-
-     String getDescription(); /* Get formatted description from raw response */
-
-}
+// --Commented out by Inspection START (6/1/17 11:14 PM):
+//public interface Scraper {
+//
+//     void parse(String s); /* Parse string to Jsoup Document */
+//
+//     String getDescription(); /* Get formatted description from raw response */
+//
+//}
+// --Commented out by Inspection STOP (6/1/17 11:14 PM)
