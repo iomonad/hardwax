@@ -19,21 +19,24 @@ package com.iomonad.hardwax.utils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.jsoup.nodes.Element;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
-public class DescParser extends AsyncTask<Document, Void, String> {
 
-    @Override
-    protected void onPreExecute(){};
+/* @Description: Trivial class to parse
+*   serialized html easily.
+* */
 
-    @Override
-    protected String doInBackground(Document... d) {
-        return "Some threaded description";
+public class DescParser {
+
+    public String getDesccription(Document d) {
+        Elements links = d.getElementsByTag("em");
+        return links.text();
     }
 
-    private String getDesccription(Document d) {
-        Elements links = d.getElementsByTag("dom");
-        return d.toString();
+    public String getImage(Document d) {
+        Element img = d.select("img").last();
+        return img.attr("src");
     }
 }

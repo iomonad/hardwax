@@ -17,12 +17,15 @@ package com.iomonad.hardwax;
  */
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -39,6 +42,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 import com.iomonad.hardwax.client.RequestHandler;
+import com.iomonad.hardwax.utils.DescParser;
+import com.squareup.picasso.Picasso;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -105,13 +110,18 @@ public class MainActivity extends AppCompatActivity {
                                 HashMap<String, String> feed = new HashMap<>();
 
                                 /* Current document modelized in soup */
-                                Document p = Jsoup.parse(cursor.get("description").toString());
-                                Elements dsoup = p.getElementsByTag("em");
+                                Document d = Jsoup.parse(cursor.get("description").toString());
+
+                                /* Parser instance */
+                                DescParser parser = new DescParser();
 
                                 /* Fill the map*/
                                 feed.put("title", cursor.get("title").toString());
-                                feed.put("description", dsoup.text());
+                                feed.put("description", parser.getDesccription(d));
                                 feed.put("link", cursor.get("guid").toString());
+                                feed.put("img", parser.getImage(d));
+                                Log.i(TAG, String.format("Got image: %s", (String) parser.getImage(d)));
+
                                 /* Push it to our MainActivity list array*/
                                 feedList.add(feed);
                             }
@@ -175,10 +185,14 @@ public class MainActivity extends AppCompatActivity {
                     R.layout.list_item, new String[]{"title","description","link"},
                     new int[] {R.id.title, R.id.description, R.id.link});
             lv.setAdapter(adapter); /* Pipe adapter to list */
+
             /* Set listener for events */
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent browser = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(feedList.get(position).get("link")));
+                    startActivity(browser);
 
                 }
             });
