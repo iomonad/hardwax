@@ -6,20 +6,11 @@
               android:layout_height="match_parent"
               android:fitsSystemWindows="true"
               android:orientation="vertical"
-              tools:context="com.iomonad.hardwax.MainActivity">
+              tools:context="com.iomonad.hardwax.activity.MainActivity">
 
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="573dp" />
-
-    <android.support.v7.widget.Toolbar
-        android:minHeight="?attr/actionBarSize"
-                                       android:layout_width="match_parent"
-                                       android:layout_height="wrap_content"
-                                       app:titleTextColor="@android:color/white"
-        android:weightSum="1">
-
-    </android.support.v7.widget.Toolbar>
+    <android.support.v7.widget.RecyclerView android:id="@+id/articles_recycler_view"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:scrollbars="vertical"/>
 
 </LinearLayout>
