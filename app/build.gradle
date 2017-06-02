@@ -7,8 +7,8 @@ android {
         applicationId "com.iomonad.hardwax"
         minSdkVersion 22
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -29,7 +29,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     /* External libraries */
-    compile 'com.github.smart-fun:XmlToJson:1.2.0'
     compile 'org.jsoup:jsoup:1.10.2'
     testCompile 'junit:junit:4.12'
 }

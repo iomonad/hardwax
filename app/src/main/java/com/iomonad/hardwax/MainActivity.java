@@ -38,7 +38,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import fr.arnaudguyon.xmltojsonlib.XmlToJson;
 import com.iomonad.hardwax.client.RequestHandler;
 import com.iomonad.hardwax.utils.DescParser;
 import com.iomonad.hardwax.client.Hardwax;
@@ -62,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         feedList = new ArrayList<>();
         lv = (ListView) findViewById(R.id.list);
 
-        new GetFeed().execute(Hardwax.selection.get("merchandise"));
+        new GetFeed().execute(Hardwax.selection.get("techno"));
     }
 
     /* Async thread to get hardwax feed */
@@ -83,19 +82,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(String... feed_path) {
             RequestHandler rh = new RequestHandler();
-            String stringRes = rh.execRequest(feed_path[0]); /* Raw xml unserialized */
+            String stringRes = rh.execRequest(feed_path[0]); /* Raw json unserialized */
 
             if(stringRes != null) {
                 try {
-                    XmlToJson xjs = new XmlToJson.Builder(stringRes)
-                            .forceList("rss").build();
-                    JSONObject jsonObj = xjs.toJson(); /* Convert stream to json object */
-                    final JSONObject rssObject = jsonObj.getJSONObject("rss");
-                    if(rssObject != null) {
-                        JSONObject chanObject = rssObject.getJSONObject("channel");
-                        if(chanObject != null) {
+                    final JSONObject jsonObj = new JSONObject(stringRes); /* Convert stream to json object */
+                    if(jsonObj != null) {
                             /*  Our feed array */
-                            JSONArray feedArray = chanObject.getJSONArray("item");
+                            JSONArray feedArray = jsonObj.getJSONArray("items");
                             /* Processing feed */
                             feed_nums = feedArray.length();
                             for(int i = 0; i < feed_nums; i++) {
@@ -105,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                                 HashMap<String, String> feed = new HashMap<>();
 
                                 /* Current document modeled in soup */
-                                Document d = Jsoup.parse(cursor.get("description").toString());
+                                Document d = Jsoup.parse(cursor.get("content_html").toString());
 
                                 /* Parser instance */
                                 DescParser parser = new DescParser();
@@ -113,14 +107,13 @@ public class MainActivity extends AppCompatActivity {
                                 /* Fill the map*/
                                 feed.put("title", cursor.get("title").toString());
                                 feed.put("description", parser.getDesccription(d));
-                                feed.put("link", cursor.get("guid").toString());
+                                feed.put("link", cursor.get("id").toString());
                                 feed.put("img", parser.getImage(d));
                                 Log.i(TAG, String.format("Got image: %s", (String) parser.getImage(d)));
 
                                 /* Push it to our MainActivity list array*/
                                 feedList.add(feed);
                             }
-                        }
                     }
 
                 } catch (final JSONException e) {
