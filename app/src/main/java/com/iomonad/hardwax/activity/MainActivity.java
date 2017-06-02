@@ -19,7 +19,10 @@ package com.iomonad.hardwax.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -72,6 +75,16 @@ public class MainActivity extends AppCompatActivity {
                                 Uri.parse(articles.get(position).getUrl()));
                         startActivity(intent);
                     }
+                });
+
+                ItemClickSupport.addTo(recyclerView).setOnItemLongClickListener(new ItemClickSupport.OnItemLongClickListener() {
+                   @Override
+                    public boolean onItemLongClicked(RecyclerView recyclerView, int position, View v) {
+                       Intent intent = new Intent(Intent.ACTION_VIEW,
+                               Uri.parse(articles.get(position).getImage()));
+                       startActivity(intent);
+                       return true;
+                   }
                 });
             }
 
