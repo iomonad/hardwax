@@ -16,7 +16,10 @@ package com.iomonad.hardwax.model;
  * limitations under the License.
  */
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import com.google.gson.annotations.SerializedName;
+import com.iomonad.hardwax.scrape.DescParser;
 
 public class Article {
     @SerializedName("url")
@@ -29,6 +32,8 @@ public class Article {
     private String date_published;
     @SerializedName("content_html")
     private String content_html;
+
+    private static final DescParser p = new DescParser();
 
     /* Basic constructor */
     public Article(String url, String title, String id,
@@ -58,6 +63,16 @@ public class Article {
 
     public String getContent_html() {
         return content_html;
+    }
+
+    public String getDescription() {
+        Document d = Jsoup.parse(this.content_html);
+        return p.getDescription(d);
+    }
+
+    public String getImage() {
+        Document d = Jsoup.parse(this.content_html);
+        return p.getImage(d);
     }
 
     public void setTitle(String title) {

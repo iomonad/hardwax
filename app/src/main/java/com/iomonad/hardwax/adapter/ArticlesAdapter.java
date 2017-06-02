@@ -37,14 +37,14 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
     public static class ArticleViewHolder extends RecyclerView.ViewHolder {
         LinearLayout articlesLayout;
         TextView articleTitle;
-        TextView articleUrl;
+        //TextView articleUrl;
         TextView articleDescription;
 
         public ArticleViewHolder(View v) {
             super(v);
             articlesLayout = (LinearLayout) v.findViewById(R.id.articles_layout);
             articleTitle = (TextView) v.findViewById(R.id.title);
-            articleUrl = (TextView) v.findViewById(R.id.url);
+            //articleUrl = (TextView) v.findViewById(R.id.url);
             articleDescription = (TextView) v.findViewById(R.id.description);
         }
     }
@@ -67,8 +67,8 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
     @Override
     public void onBindViewHolder(ArticleViewHolder holder, final int position) {
         holder.articleTitle.setText(articles.get(position).getTitle()); /* Retrieve from rest client */
-        holder.articleUrl.setText(articles.get(position).getUrl());
-        holder.articleDescription.setText(articles.get(position).getContent_html());
+        //holder.articleUrl.setText(articles.get(position).getUrl());
+        holder.articleDescription.setText(articles.get(position).getDescription());
     }
 
     @Override

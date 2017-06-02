@@ -16,14 +16,16 @@ package com.iomonad.hardwax.activity;
  * limitations under the License.
  */
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Toast;
-
-import java.util.List;
 
 import com.iomonad.hardwax.R;
 import com.iomonad.hardwax.adapter.ArticlesAdapter;
@@ -31,6 +33,8 @@ import com.iomonad.hardwax.model.Article;
 import com.iomonad.hardwax.model.ArticleResponse;
 import com.iomonad.hardwax.rest.RestClient;
 import com.iomonad.hardwax.rest.RestInterface;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,9 +61,18 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<ArticleResponse>() {
             @Override
             public void onResponse(Call<ArticleResponse> call, Response<ArticleResponse> response) {
-                List<Article> articles = response.body().getItems();
+                final List<Article> articles = response.body().getItems();
                 Log.d(TAG, String.format("Got %s articles", articles.size()));
                 recyclerView.setAdapter(new ArticlesAdapter(articles, R.layout.list_items_articles,getApplicationContext()));
+
+                ItemClickSupport.addTo(recyclerView).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+                    @Override
+                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW,
+                                Uri.parse(articles.get(position).getUrl()));
+                        startActivity(intent);
+                    }
+                });
             }
 
             @Override
@@ -70,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                         Toast.LENGTH_LONG).show();
             }
         });
-
     }
 
     @SuppressWarnings("EmptyMethod")

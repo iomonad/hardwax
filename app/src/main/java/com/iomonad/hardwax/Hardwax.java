@@ -1,4 +1,4 @@
-package com.iomonad.hardwax.client;
+package com.iomonad.hardwax;
 
 /*
  * Copyright (c) 2017 iomonad <iomonad@riseup.net>.

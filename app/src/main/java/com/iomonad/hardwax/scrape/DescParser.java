@@ -1,4 +1,4 @@
-package com.iomonad.hardwax.utils;
+package com.iomonad.hardwax.scrape;
 
 /*
  * Copyright (c) 2017 iomonad <iomonad@riseup.net>.
@@ -25,7 +25,7 @@ import org.jsoup.nodes.Element;
 * */
 
 public class DescParser {
-    public String getDesccription(Document d) {
+    public String getDescription(Document d) {
         Elements links = d.getElementsByTag("em");
         return links.text();
     }
