@@ -30,15 +30,14 @@ import com.iomonad.hardwax.model.Article;
 
 public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.ArticleViewHolder> {
 
-    private List<Article> articles;
-    private int rowLayout;
-    private Context context;
+    private final List<Article> articles;
+    private final int rowLayout;
 
     public static class ArticleViewHolder extends RecyclerView.ViewHolder {
-        LinearLayout articlesLayout;
-        TextView articleTitle;
+        final LinearLayout articlesLayout;
+        final TextView articleTitle;
         //TextView articleUrl;
-        TextView articleDescription;
+        final TextView articleDescription;
 
         public ArticleViewHolder(View v) {
             super(v);
@@ -50,10 +49,10 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
     }
 
     public ArticlesAdapter(List<Article> articles,
-                           int rowLayout, Context context) {
+                           Context context) {
         this.articles = articles;
-        this.rowLayout = rowLayout;
-        this.context = context;
+        this.rowLayout = R.layout.list_items_articles;
+        Context context1 = context;
     }
 
     @Override

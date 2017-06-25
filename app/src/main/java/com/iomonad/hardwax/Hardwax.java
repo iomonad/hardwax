@@ -19,8 +19,8 @@ package com.iomonad.hardwax;
 import java.util.Map;
 import java.util.HashMap;
 
-public class Hardwax {
-    public static final Map<String, String> selection;
+class Hardwax {
+    private static final Map<String, String> selection;
     static {
         selection = new HashMap<String, String>() {{
             /* New releases */

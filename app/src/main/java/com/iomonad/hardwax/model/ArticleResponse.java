@@ -22,15 +22,23 @@ import java.util.List;
 
 public class ArticleResponse {
     @SerializedName("version")
-    private String version;
+    private final String version;
     @SerializedName("title")
-    private String title;
+    private final String title;
     @SerializedName("home_page_url")
-    private String home_page_url;
+    private final String home_page_url;
     @SerializedName("feed_url")
-    private String feed_url;
+    private final String feed_url;
     @SerializedName("items")
-    private List<Article> items;
+    private final List<Article> items;
+
+    public ArticleResponse(String version, String title, String home_page_url, String feed_url, List<Article> items) {
+        this.version = version;
+        this.title = title;
+        this.home_page_url = home_page_url;
+        this.feed_url = feed_url;
+        this.items = items;
+    }
 
     public String getVersion() {
         return version;

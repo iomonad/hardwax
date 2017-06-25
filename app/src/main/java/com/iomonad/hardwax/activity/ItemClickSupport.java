@@ -24,26 +24,26 @@ public class ItemClickSupport {
     private final RecyclerView mRecyclerView;
     private OnItemClickListener mOnItemClickListener;
     private OnItemLongClickListener mOnItemLongClickListener;
-    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (mOnItemClickListener != null) {
                 RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(v);
-                mOnItemClickListener.onItemClicked(mRecyclerView, holder.getAdapterPosition(), v);
+                mOnItemClickListener.onItemClicked(holder.getAdapterPosition());
             }
         }
     };
-    private View.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
+    private final View.OnLongClickListener mOnLongClickListener = new View.OnLongClickListener() {
         @Override
         public boolean onLongClick(View v) {
             if (mOnItemLongClickListener != null) {
                 RecyclerView.ViewHolder holder = mRecyclerView.getChildViewHolder(v);
-                return mOnItemLongClickListener.onItemLongClicked(mRecyclerView, holder.getAdapterPosition(), v);
+                return mOnItemLongClickListener.onItemLongClicked(holder.getAdapterPosition());
             }
             return false;
         }
     };
-    private RecyclerView.OnChildAttachStateChangeListener mAttachListener
+    private final RecyclerView.OnChildAttachStateChangeListener mAttachListener
             = new RecyclerView.OnChildAttachStateChangeListener() {
         @Override
         public void onChildViewAttachedToWindow(View view) {
@@ -83,14 +83,12 @@ public class ItemClickSupport {
         return support;
     }
 
-    public ItemClickSupport setOnItemClickListener(OnItemClickListener listener) {
+    public void setOnItemClickListener(OnItemClickListener listener) {
         mOnItemClickListener = listener;
-        return this;
     }
 
-    public ItemClickSupport setOnItemLongClickListener(OnItemLongClickListener listener) {
+    public void setOnItemLongClickListener(OnItemLongClickListener listener) {
         mOnItemLongClickListener = listener;
-        return this;
     }
 
     private void detach(RecyclerView view) {
@@ -100,11 +98,12 @@ public class ItemClickSupport {
 
     public interface OnItemClickListener {
 
-        void onItemClicked(RecyclerView recyclerView, int position, View v);
+        void onItemClicked(int position);
     }
 
     public interface OnItemLongClickListener {
 
-        boolean onItemLongClicked(RecyclerView recyclerView, int position, View v);
+        @SuppressWarnings("SameReturnValue")
+        boolean onItemLongClicked(int position);
     }
 }
