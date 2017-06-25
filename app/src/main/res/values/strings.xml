@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Hardwax</string>
+    <string name="action_favorite">main</string>
+    <string name="action_settings">settings</string>
 </resources>
