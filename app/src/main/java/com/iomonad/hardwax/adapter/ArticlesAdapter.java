@@ -38,6 +38,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
         final TextView articleTitle;
         //TextView articleUrl;
         final TextView articleDescription;
+        final TextView articlePrice;
 
         public ArticleViewHolder(View v) {
             super(v);
@@ -45,6 +46,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
             articleTitle = (TextView) v.findViewById(R.id.title);
             //articleUrl = (TextView) v.findViewById(R.id.url);
             articleDescription = (TextView) v.findViewById(R.id.description);
+            articlePrice = (TextView) v.findViewById(R.id.price);
         }
     }
 
@@ -68,6 +70,7 @@ public class ArticlesAdapter extends RecyclerView.Adapter<ArticlesAdapter.Articl
         holder.articleTitle.setText(articles.get(position).getTitle()); /* Retrieve from rest client */
         //holder.articleUrl.setText(articles.get(position).getUrl());
         holder.articleDescription.setText(articles.get(position).getDescription());
+        holder.articlePrice.setText(articles.get(position).getPrice());
     }
 
     @Override

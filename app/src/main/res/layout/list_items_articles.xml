@@ -51,15 +51,23 @@
         android:layout_height="35dp"
         android:orientation="horizontal">
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/article_image"
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:scaleType="centerCrop"
             android:src="@drawable/star"
             android:tint="@color/colorAccent"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription" />-->
 
+        <TextView
+            android:id="@+id/article_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:text="€"
+            android:textColor="@color/colorAccent"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/price"

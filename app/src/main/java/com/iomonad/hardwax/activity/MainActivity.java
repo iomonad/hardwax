@@ -16,16 +16,21 @@ package com.iomonad.hardwax.activity;
  * limitations under the License.
  */
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 import com.iomonad.hardwax.R;
 import com.iomonad.hardwax.adapter.ArticlesAdapter;
@@ -42,6 +47,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    final Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         call.enqueue(new Callback<ArticleResponse>() {
             @Override
-            public void onResponse(Call<ArticleResponse> call, Response<ArticleResponse> response) {
+            public void onResponse(final Call<ArticleResponse> call, Response<ArticleResponse> response) {
                 @SuppressWarnings("ConstantConditions") final List<Article> articles = response.body().getItems();
                 Log.d(TAG, String.format("Got %s articles", articles.size()));
                 recyclerView.setAdapter(new ArticlesAdapter(articles, getApplicationContext()));
@@ -76,11 +82,29 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 ItemClickSupport.addTo(recyclerView).setOnItemLongClickListener(new ItemClickSupport.OnItemLongClickListener() {
-                   @Override
-                    public boolean onItemLongClicked(int position) {
-                       Intent intent = new Intent(Intent.ACTION_VIEW,
-                               Uri.parse(articles.get(position).getImage()));
-                       startActivity(intent);
+
+                    @Override
+                    public boolean onItemLongClicked(final int position) {
+
+                       CharSequence choice[] = new CharSequence[] {  "\uD83D\uDC41 View image"
+                                                                   , "★ Bookmark"};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                       builder.setTitle(articles.get(position).getTitle());
+                       builder.setItems(choice, new DialogInterface.OnClickListener() {
+                           @Override
+                           public void onClick(DialogInterface dialog, int which) {
+                                switch (which) {
+                                    case 0: /* Open browser activity */
+                                        Intent intent = new Intent(Intent.ACTION_VIEW,
+                                                Uri.parse(articles.get(position).getImage()));
+                                        startActivity(intent);
+                                    case 1: /* Save it to sqlite database */
+                                    default:
+                                        return;
+                                }
+                           }
+                       });
+                       builder.show();
                        return true;
                    }
                 });

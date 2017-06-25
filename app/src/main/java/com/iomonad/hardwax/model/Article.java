@@ -33,14 +33,17 @@ public class Article {
     @SerializedName("content_html")
     private String content_html;
 
+    private String price;
+
     private static final DescParser p = new DescParser();
 
     /* Basic constructor */
-    public Article(String url, String title, String id,
+    public Article(String url, String title, String id, String price,
                    String date_published, String content_html) {
         this.url = url;
         this.title = title;
         this.id = id;
+        this.price = price;
         this.date_published = date_published;
         this.content_html = content_html;
     }
@@ -73,6 +76,11 @@ public class Article {
     public String getImage() {
         Document d = Jsoup.parse(this.content_html);
         return p.getImage(d);
+    }
+
+    public String getPrice() {
+        Document d = Jsoup.parse(this.content_html);
+        return p.getPrice(d);
     }
 
     public void setTitle(String title) {

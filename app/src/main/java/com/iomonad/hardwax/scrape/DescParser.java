@@ -19,6 +19,8 @@ package com.iomonad.hardwax.scrape;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Element;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /* @Description: Trivial class to parse
 *   serialized html easily.
@@ -32,5 +34,16 @@ public class DescParser {
     public String getImage(Document d) {
         Element img = d.select("img").last();
         return img.attr("src");
+    }
+    public String getPrice(Document d) {
+        Elements pp = d.getElementsByTag("p");
+        Pattern p = Pattern.compile("€(.*?)<");
+        Matcher m = p.matcher(pp.text());
+        if (m.find()) {
+            return  m.group(1);
+        }
+        else {
+            return "free";
+        }
     }
 }
