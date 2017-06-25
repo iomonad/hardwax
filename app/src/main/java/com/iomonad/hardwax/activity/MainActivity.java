@@ -34,11 +34,16 @@ import android.view.View;
 import android.widget.Toast;
 import com.iomonad.hardwax.R;
 import com.iomonad.hardwax.adapter.ArticlesAdapter;
+import com.iomonad.hardwax.database.RestDatabase;
 import com.iomonad.hardwax.model.Article;
 import com.iomonad.hardwax.model.ArticleResponse;
 import com.iomonad.hardwax.rest.RestClient;
 import com.iomonad.hardwax.rest.RestInterface;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.StringTokenizer;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -86,8 +91,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public boolean onItemLongClicked(final int position) {
 
-                       CharSequence choice[] = new CharSequence[] {  "\uD83D\uDC41 View image"
-                                                                   , "★ Bookmark"};
+                       CharSequence choice[] = new CharSequence[] {  "\uD83D\uDC41  View image"
+                                                                   , "★  Bookmark"};
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
                        builder.setTitle(articles.get(position).getTitle());
                        builder.setItems(choice, new DialogInterface.OnClickListener() {
@@ -99,6 +104,11 @@ public class MainActivity extends AppCompatActivity {
                                                 Uri.parse(articles.get(position).getImage()));
                                         startActivity(intent);
                                     case 1: /* Save it to sqlite database */
+                                        HashMap<String, String> data = new HashMap<String, String>();
+                                        data.put("title",articles.get(position).getTitle());
+                                        data.put("desc",articles.get(position).getDescription());
+                                        data.put("link",articles.get(position).getUrl());
+                                        new RestDatabase().execute(data); /* Send to async records*/
                                     default:
                                         return;
                                 }
